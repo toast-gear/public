@@ -1,0 +1,24 @@
+name: Workflow Dispatch Anything
+
+on:
+  workflow_dispatch:
+
+env:
+  ENABLE_DEPLOY: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      enable_deploy: ${{ steps.configuration.outputs.enable_deploy }}
+    steps:
+      - name: Output configuration
+        id: configuration
+        run: |
+          echo "::set-output name=enable_deploy::${{ env.ENABLE_DEPLOY }}"
+  deploy:
+    if: ${{ needs.check.outputs.enable_deploy == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: echo "hello world"
